@@ -1,0 +1,41 @@
+ifneq ($(LIBRARY),)
+EXTRA_FLAGS=-fpic -fno-rtti
+endif
+
+OBJECTS=$(SOURCES:.cpp=.o)
+
+.PHONY: all
+
+all: $(LIBRARY) $(EXECUTABLE)
+
+$(LIBRARY): $(OBJECTS)
+	clang++ -shared -o $@ $^
+
+$(EXECUTABLE): $(OBJECTS)
+	clang++ $^ -o $@ `llvm-config --ldflags --libs --system-libs` 
+
+%.o: %.cpp
+	clang++ -c $(EXTRA_FLAGS) `llvm-config --cppflags` $^ -o $@
+
+.PHONY: test run
+
+test: $(TEST).opt.bc 
+
+run: $(TEST).exe
+	./$(TEST).exe
+
+$(TEST).exe: $(TEST).opt.bc
+	clang $< $(TEST_LIB_FLAG) -o $@
+
+$(TEST).opt.bc: $(TEST).bc $(LIBRARY)
+	opt -load ./$(LIBRARY) -$(PASSNAME) $< -o $@
+	llvm-dis $@
+
+$(TEST).bc: $(TEST).c
+	clang -c -emit-llvm $< -o $@ 
+	llvm-dis $@
+
+.PHONY: clean
+
+clean:
+	rm -f $(LIBRARY) $(EXECUTABLE) $(OBJECTS) *.ll *.bc *.exe

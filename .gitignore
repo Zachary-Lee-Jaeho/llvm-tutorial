@@ -1,0 +1,13 @@
+llvm/*
+!llvm/Makefile
+
+*.o
+*.s
+*.bc
+*.ll
+*.so
+*.exe
+
+*.pdf
+
+tlang

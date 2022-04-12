@@ -28,7 +28,7 @@ $(TEST).exe: $(TEST).opt.bc
 	clang $< $(TEST_LIB_FLAG) -o $@
 
 $(TEST).opt.bc: $(TEST).bc $(LIBRARY)
-	opt -load ./$(LIBRARY) -$(PASSNAME) $< -o $@
+	opt -load ./$(LIBRARY) -$(PASSNAME) $< -o $@ --enable-new-pm=0
 	llvm-dis $@
 
 $(TEST).bc: $(TEST).c

@@ -4,6 +4,21 @@
 #include "CallCount.h"
 
 bool CallCount::runOnFunction(Function &F) {
+
+    //========--------  Answer --------==========
+    int count = 0;
+    for(BasicBlock &BB : F) {
+        for(Instruction &I : BB) {
+            if(CallInst *CI = dyn_cast<CallInst>(&I)) {
+                count++;
+            }
+        }
+    }
+
+    dbgs() << "Function Name: " << F.getName() << "\n";
+    dbgs() << "# of CallInst: " << count << "\n";
+    //========--------  Answer --------==========
+
     return false;
 }
 

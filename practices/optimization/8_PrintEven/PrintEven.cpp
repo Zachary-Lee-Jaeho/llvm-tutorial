@@ -6,7 +6,50 @@
 #include "llvm/IR/DerivedTypes.h"
 
 bool PrintEven::runOnModule(Module &M) {
-    return false;
+
+    //========--------  Answer --------==========
+    LLVMContext &Context = M.getContext();
+
+    Function *F = M.getFunction("printInt");
+    if(!F) {
+        return false;
+    }
+
+    BasicBlock &EntryBB = *F->begin();
+    Instruction *PrintfCall = nullptr;
+
+    for (Instruction &I : EntryBB) {
+        if(CallInst *CI = dyn_cast<CallInst>(&I)) {
+            if(CI->getCalledFunction()->getName() == "printf"){
+                PrintfCall = CI;
+            }
+        }
+    }
+
+    if(!PrintfCall) {
+        return false;
+    }
+
+    BasicBlock *PrintfBB = EntryBB.splitBasicBlock(PrintfCall);
+    EntryBB.getTerminator()->eraseFromParent();
+
+    BasicBlock *RetBB = BasicBlock::Create(Context, "retbb", F);
+    IRBuilder<> RetBBBuilder(RetBB);
+    RetBBBuilder.CreateRetVoid();
+
+    IRBuilder<> EntryBBBuilder(&EntryBB);
+
+    Argument *Arg = F->arg_begin();
+    Constant *Two = ConstantInt::get(Type::getInt32Ty(Context), 2);
+    Value *Remainder = EntryBBBuilder.CreateSRem(Arg, Two);
+
+    Constant *One = ConstantInt::get(Type::getInt32Ty(Context), 1);
+    Value *IsOdd = EntryBBBuilder.CreateICmpEQ(Remainder, One);
+
+    EntryBBBuilder.CreateCondBr(IsOdd, RetBB, PrintfBB);
+
+    return true;
+    //========--------  Answer --------==========
 }
 
 void PrintEven::getAnalysisUsage(AnalysisUsage &AU) const {

@@ -4,6 +4,19 @@
 #include "InstCount.h"
 
 bool InstCount::runOnFunction(Function &F) {
+
+    //========--------  Answer --------==========
+    int count = 0;
+    for(BasicBlock &BB : F) {
+        for(Instruction &I : BB) {
+            count++;
+        }
+    }
+
+    dbgs() << "Function Name: " << F.getName() << "\n";
+    dbgs() << "# of Instrunctions: " << count << "\n";
+    //========--------  Answer --------==========
+
     return false;
 }
 

@@ -1,3 +1,7 @@
+
+# This makefile is for LLVM 14.0.0
+# For the newer versions, follow the official document
+
 VERSION=14.0.0
 
 SHELL=/bin/bash -O extglob -c

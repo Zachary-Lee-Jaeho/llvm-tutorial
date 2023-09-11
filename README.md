@@ -61,7 +61,7 @@ You will get the output of the optimized program.
 ## Contact
 
 If you need a solution for the practices, please contact me.  
-Jaeho Lee, ejaho0103@yonsei.ac.kr
+Jaeho Lee, ejaho0103/at/yonsei/dot/ac/dot/kr
 
 ---
 This repository is distributed under the University of Illinois Open Source License.
